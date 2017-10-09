@@ -10,26 +10,25 @@
 */
 
 const socketio = require('socket.io')
-const Ioc = require('adonis-fold').Ioc
 const Channel = require('../Channel')
 const Middleware = require('../Middleware')
 const CE = require('../Exceptions')
 const defaultConfig = require('../../examples/config')
 const sessionMethodsToDisable = ['put', 'pull', 'flush', 'forget']
+const { resolver, ioc } = require('@adonisjs/fold')
 
 class Ws {
+
   constructor (Config, Request, Server, Session, Helpers) {
-    class WsSession extends Session {
+    class WsSession {
     }
     this.config = Config.get('ws', defaultConfig)
     this.io = null
-    if (this.config.useHttpServer) {
-      this.attach(Server.getInstance())
-    }
+    this.config.useHttpServer ? this.attach(Server.getInstance()) : null
     this.Request = Request
     this.Session = WsSession
     this.Helpers = Helpers
-    this.controllersPath = 'Ws/Controllers'
+    this.controllersPath = 'Controllers/Ws'
 
     /**
      * Channels pool to store channel instances. This is done
@@ -69,7 +68,7 @@ class Ws {
      * controllers.
      */
     if (typeof (closure) === 'string') {
-      closure = Ioc.use(this.Helpers.makeNameSpace(this.controllersPath, closure))
+      closure = ioc.use(resolver.forDir('wsControllers').translate(closure))
     }
 
     /**
@@ -97,6 +96,7 @@ class Ws {
    */
   attach (server) {
     this.io = socketio(server)
+
     if (this.config.useUws) {
       this.io.ws = new (require('uws').Server)({
         noServer: true,
@@ -122,6 +122,7 @@ class Ws {
   named (set) {
     Middleware.named(set)
   }
+
 }
 
 module.exports = Ws

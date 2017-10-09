@@ -12,6 +12,7 @@
 const _ = require('lodash')
 
 class Presence {
+
   constructor (io) {
     this.io = io
     this._usersPool = {}

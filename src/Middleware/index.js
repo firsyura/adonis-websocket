@@ -10,7 +10,7 @@
 */
 
 const CoCompose = require('co-compose')
-const Ioc = require('adonis-fold').Ioc
+const Ioc = require('@adonisjs/fold').Ioc
 const haye = require('haye')
 const _ = require('lodash')
 const CE = require('../Exceptions')

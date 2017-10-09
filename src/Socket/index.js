@@ -12,9 +12,10 @@
 const _ = require('lodash')
 const util = require('../../lib/util')
 const CE = require('../Exceptions')
-const Resetable = require('resetable')
+const Resetable = require('../../lib/Resetable')
 
 class AdonisSocket {
+
   constructor (io, socket) {
     this.io = io
     this.socket = socket
